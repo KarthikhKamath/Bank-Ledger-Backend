@@ -92,22 +92,12 @@ else
   exit 1
 fi
 
-echo "Building Go binaries for $GOOS/$GOARCH..."
-
-# Build bank-ledger-service
-GOARCH=$GOARCH GOOS=$GOOS go build -o bank-ledger-service ./cmd/bank-ledger-service
-echo "Built bank-ledger-service binary."
-
-# Build bank-ledger-consumer
-GOARCH=$GOARCH GOOS=$GOOS go build -o bank-ledger-consumer ./cmd/bank-ledger-consumer
-echo "Built bank-ledger-consumer binary."
-
 echo "Starting Docker dependencies..."
 $COMPOSE_COMMAND down
 $COMPOSE_COMMAND up -d
 
 echo "Waiting for dependencies to be healthy..."
-sleep 20  # Increased wait time to ensure Kafka is fully initialized
+sleep 10
 
 echo "Checking if Kafka is up..."
 if docker ps | grep -q kafka; then
@@ -115,6 +105,15 @@ if docker ps | grep -q kafka; then
 else
   echo "Kafka container is not running! Check docker logs."
   exit 1
+fi
+
+# Update /etc/hosts for local Kafka connection
+if ! grep -q "kafka" /etc/hosts; then
+  echo "Adding kafka entry to /etc/hosts..."
+  echo "127.0.0.1 kafka" | sudo tee -a /etc/hosts
+  echo "Updated /etc/hosts file."
+else
+  echo "kafka entry already exists in /etc/hosts."
 fi
 
 # Check if port 9092 is available
@@ -129,6 +128,16 @@ if command -v nc &> /dev/null; then
 else
   echo "Note: 'nc' command not found, skipping port check."
 fi
+
+echo "Building Go binaries for $GOOS/$GOARCH..."
+
+# Build bank-ledger-service
+GOARCH=$GOARCH GOOS=$GOOS go build -o bank-ledger-service ./cmd/bank-ledger-service
+echo "Built bank-ledger-service binary."
+
+# Build bank-ledger-consumer
+GOARCH=$GOARCH GOOS=$GOOS go build -o bank-ledger-consumer ./cmd/bank-ledger-consumer
+echo "Built bank-ledger-consumer binary."
 
 echo "Running Go services locally..."
 
