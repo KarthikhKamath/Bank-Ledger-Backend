@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package bankLedger.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "bank-ledger-service/api/bankLedger/v1;v1";
+option java_multiple_files = true;
+option java_package = "dev.kratos.api.bankLedger.v1";
+option java_outer_classname = "BankLedgerProtoV1";
+
+service Transaction {
+  rpc CreateTransaction (CreateTransactionRequest) returns (CreateTransactionResponse) {
+    option (google.api.http) = {
+      post: "/v1/transaction"
+      body: "*"
+    };
+  }
+
+  rpc GetTransactionById (GetTransactionByIdRequest) returns (GetTransactionResponse) {
+    option (google.api.http) = {
+      get: "/v1/transaction/{transaction_id}"
+    };
+  }
+
+  rpc GetTransactionsByAccount (GetTransactionsByAccountRequest) returns (GetTransactionsByAccountResponse) {
+    option (google.api.http) = {
+      get: "/v1/account/{account_id}/transactions"
+    };
+  }
+}
+
+
+message CreateTransactionRequest {
+  string account_id = 1;
+  double amount = 2;
+  TransactionType type = 3;
+  string description = 4;
+}
+
+message CreateTransactionResponse {
+  string transaction_id = 1;
+  string account_id = 2;
+  TransactionStatus status = 3;
+  string created_at = 4;
+}
+
+message GetTransactionByIdRequest {
+  string transaction_id = 1;
+}
+
+message EachTransaction {
+  string id = 1;
+  string account_id = 2;
+  double amount = 3;
+  TransactionType type = 4;
+  string description = 5;
+  string currency = 6;
+  TransactionStatus status = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+message TransactionLog {
+  string timestamp = 1;
+  string message = 2;
+  string status = 3;
+  int32 attempt = 4;
+}
+
+message GetTransactionResponse {
+  EachTransaction transaction = 1;
+  repeated TransactionLog logs = 2;
+}
+
+message GetTransactionsByAccountRequest {
+  string account_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message PaginationInfo {
+  int32 total_count = 1;
+  int32 page_size = 2;
+  int32 page = 3;
+  int32 total_pages = 4;
+}
+
+message AccountInfo {
+  string id = 1;
+  double balance = 2;
+  string currency = 3;
+  string status = 4;
+}
+
+message GetTransactionsByAccountResponse {
+  string account_id = 1;
+  repeated EachTransaction transactions = 2;
+  PaginationInfo pagination = 3;
+  AccountInfo account_info = 4;
+}
+
+enum TransactionType {
+  TRANSACTION_TYPE_UNSPECIFIED = 0;
+  DEPOSIT = 1;
+  WITHDRAWAL = 2;
+}
+
+enum TransactionStatus {
+  TRANSACTION_STATUS_UNSPECIFIED = 0;
+  INITIATED = 1;
+  PROCESSING = 2;
+  SUCCESS = 3;
+  FAILED = 4;
+}

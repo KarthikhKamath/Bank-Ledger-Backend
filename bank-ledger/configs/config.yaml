@@ -1,0 +1,38 @@
+server:
+  http:
+    addr: 0.0.0.0:8001
+    timeout: 1s
+  grpc:
+    addr: 0.0.0.0:9000
+    timeout: 1s
+
+consumer:
+  http:
+    addr: 0.0.0.0:8005
+    timeout: 1s
+  grpc:
+    addr: 0.0.0.0:9005
+    timeout: 1s
+
+data:
+  database:
+    driver: mysql
+    # Connect to MySQL on localhost:3307 (mapped port)
+    source: root:karthik7@tcp(localhost:3307)/transaction-ledger?parseTime=True&loc=Local
+
+  redis:
+    # Connect to Redis on localhost:6380
+    addr: localhost:6380
+    read_timeout: 0.2s
+    write_timeout: 0.2s
+
+  kafka:
+    brokers:
+      - 127.0.0.1:9092
+    retries: 5
+    required_acks: -1
+    timeout: 3s
+
+  mongodb:
+    uri: mongodb://karthik7:karthik7@localhost:27018
+    database: transaction-ledger-db

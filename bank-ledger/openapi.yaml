@@ -1,0 +1,325 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ""
+    version: 0.0.1
+paths:
+    /v1/account:
+        get:
+            tags:
+                - Account
+            operationId: Account_GetAllAccounts
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/bankLedger.v1.GetAllAccountsResponse'
+        post:
+            tags:
+                - Account
+            operationId: Account_CreateAccount
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/bankLedger.v1.CreateAccountRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/bankLedger.v1.AccountResponse'
+    /v1/account/{accountId}/transactions:
+        get:
+            tags:
+                - Transaction
+            operationId: Transaction_GetTransactionsByAccount
+            parameters:
+                - name: accountId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/bankLedger.v1.GetTransactionsByAccountResponse'
+    /v1/account/{id}:
+        get:
+            tags:
+                - Account
+            operationId: Account_GetAccount
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/bankLedger.v1.AccountResponse'
+        put:
+            tags:
+                - Account
+            operationId: Account_UpdateAccount
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/bankLedger.v1.UpdateAccountRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/bankLedger.v1.AccountResponse'
+        delete:
+            tags:
+                - Account
+            operationId: Account_DeleteAccount
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/bankLedger.v1.DeleteAccountResponse'
+    /v1/transaction:
+        post:
+            tags:
+                - Transaction
+            operationId: Transaction_CreateTransaction
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/bankLedger.v1.CreateTransactionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/bankLedger.v1.CreateTransactionResponse'
+    /v1/transaction/{transactionId}:
+        get:
+            tags:
+                - Transaction
+            operationId: Transaction_GetTransactionById
+            parameters:
+                - name: transactionId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/bankLedger.v1.GetTransactionResponse'
+components:
+    schemas:
+        bankLedger.v1.AccountInfo:
+            type: object
+            properties:
+                id:
+                    type: string
+                balance:
+                    type: number
+                    format: double
+                currency:
+                    type: string
+                status:
+                    type: string
+        bankLedger.v1.AccountResponse:
+            type: object
+            properties:
+                id:
+                    type: string
+                accountNumber:
+                    type: string
+                name:
+                    type: string
+                balance:
+                    type: string
+                currency:
+                    type: integer
+                    format: enum
+                status:
+                    type: integer
+                    format: enum
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+        bankLedger.v1.CreateAccountRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                currency:
+                    type: integer
+                    format: enum
+        bankLedger.v1.CreateTransactionRequest:
+            type: object
+            properties:
+                accountId:
+                    type: string
+                amount:
+                    type: number
+                    format: double
+                type:
+                    type: integer
+                    format: enum
+                description:
+                    type: string
+        bankLedger.v1.CreateTransactionResponse:
+            type: object
+            properties:
+                transactionId:
+                    type: string
+                accountId:
+                    type: string
+                status:
+                    type: integer
+                    format: enum
+                createdAt:
+                    type: string
+        bankLedger.v1.DeleteAccountResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        bankLedger.v1.EachTransaction:
+            type: object
+            properties:
+                id:
+                    type: string
+                accountId:
+                    type: string
+                amount:
+                    type: number
+                    format: double
+                type:
+                    type: integer
+                    format: enum
+                description:
+                    type: string
+                currency:
+                    type: string
+                status:
+                    type: integer
+                    format: enum
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+        bankLedger.v1.GetAllAccountsResponse:
+            type: object
+            properties:
+                accounts:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/bankLedger.v1.AccountResponse'
+        bankLedger.v1.GetTransactionResponse:
+            type: object
+            properties:
+                transaction:
+                    $ref: '#/components/schemas/bankLedger.v1.EachTransaction'
+                logs:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/bankLedger.v1.TransactionLog'
+        bankLedger.v1.GetTransactionsByAccountResponse:
+            type: object
+            properties:
+                accountId:
+                    type: string
+                transactions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/bankLedger.v1.EachTransaction'
+                pagination:
+                    $ref: '#/components/schemas/bankLedger.v1.PaginationInfo'
+                accountInfo:
+                    $ref: '#/components/schemas/bankLedger.v1.AccountInfo'
+        bankLedger.v1.PaginationInfo:
+            type: object
+            properties:
+                totalCount:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+                page:
+                    type: integer
+                    format: int32
+                totalPages:
+                    type: integer
+                    format: int32
+        bankLedger.v1.TransactionLog:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                message:
+                    type: string
+                status:
+                    type: string
+                attempt:
+                    type: integer
+                    format: int32
+        bankLedger.v1.UpdateAccountRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                status:
+                    type: integer
+                    format: enum
+tags:
+    - name: Account
+    - name: Transaction

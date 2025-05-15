@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package bankLedger.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "bank-ledger-service/api/bankLedger/v1;v1";
+option java_multiple_files = true;
+option java_package = "dev.kratos.api.bankLedger.v1";
+option java_outer_classname = "BankLedgerProtoV1";
+
+service Account {
+
+  rpc CreateAccount (CreateAccountRequest) returns (AccountResponse) {
+    option (google.api.http) = {
+      post: "/v1/account"
+      body: "*"
+    };
+  }
+
+  rpc GetAccount (BaseRequest) returns (AccountResponse) {
+    option (google.api.http) = {
+      get: "/v1/account/{id}"
+    };
+  }
+
+  rpc GetAllAccounts (EmptyRequest) returns (GetAllAccountsResponse){
+    option (google.api.http) = {
+      get:"/v1/account"
+    };
+  }
+
+  rpc UpdateAccount (UpdateAccountRequest) returns (AccountResponse) {
+    option (google.api.http) = {
+      put: "/v1/account/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteAccount (BaseRequest) returns (DeleteAccountResponse) {
+    option (google.api.http) = {
+      delete: "/v1/account/{id}"
+    };
+  }
+
+}
+
+message EmptyRequest{}
+
+message BaseRequest {
+  string id = 1;
+}
+
+message BaseResponse{}
+
+message CreateAccountRequest {
+  string name = 1;
+  Currency currency = 2;
+}
+
+message AccountResponse {
+  string id = 1;
+  string accountNumber = 2;
+  string name = 3;
+  string balance = 4;
+  Currency currency = 5;
+  AccountStatus status = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+
+message GetAllAccountsResponse{
+  repeated AccountResponse accounts = 1;
+}
+
+enum AccountStatus {
+  ACTIVE = 0;
+  CLOSED = 1;
+}
+
+enum Currency {
+  CURRENCY_UNSPECIFIED = 0;
+  INR = 1;
+}
+
+message UpdateAccountRequest {
+  string id = 1;
+  string name = 2;
+  AccountStatus status = 3;
+}
+
+message DeleteAccountResponse{
+  bool success = 1;
+}
