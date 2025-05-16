@@ -12,7 +12,7 @@ git clone https://github.com/KarthikhKamath/Bank-Ledger-Backend.git
 ```
 cd bank-ledger
 ```
-
+NOTE : Please make sure docker is running.
 ```
 chmod +x start.sh
 ./start.sh
